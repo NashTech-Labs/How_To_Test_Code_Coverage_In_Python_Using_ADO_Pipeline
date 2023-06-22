@@ -1,0 +1,37 @@
+trigger: 
+- master
+
+pool: Harshit-pool
+
+steps:
+
+- script: |
+      echo "-----Checking Current Directory------" 
+      pwd
+      ls
+  displayName: 'Checking Current Directory'
+
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+    architecture: 'x64'
+
+- script: |
+      # cd dcodnext.ems.orchestrator
+      # pip install pipenv
+      # pip install pytest pytest-azurepipelines
+      pip install pylint pylint-report
+  continueOnError: False
+  displayName: 'Dependencies Install'
+
+
+- script: |
+      echo "Report of Code"
+      pwd 
+      ls
+      pylint --reports=y * --output report.html --output-format msvs
+      cat report.html
+  displayName: 'pylint code coverage'
+
+
